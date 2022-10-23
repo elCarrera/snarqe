@@ -1,17 +1,25 @@
-<script src='https://cdn.jsdelivr.net/gh/aframevr/aframe@1c2407b26c61958baa93967b5412487cd94b290b/dist/aframe-master.min.js'></script>
-
-<head>
-	<title>LaCartaPorfa AR</title>
-</head>
-<body style='margin : 0px; overflow: hidden;'>
-    <a-scene arjs embedded artoolkit='sourceType: webcam;'>
-    	<a-assets>
-    		<a-asset-item id="beer" src="/Modelos/scene.gltf"></a-asset-item>
-    	</a-assets>
-		<a-marker-camera preset="hiro"></a-marker-camera>
-		<a-entity gltf-model="#beer"></a-entity>
-		<a-box position='0 0.5 0' color="#9bca3d" radius=".5" metalness=".5" material='opacity: 1;'></a-box>
-		<a-sky color="#ECECEC"></a-sky>
-		<a-entity camera></a-entity>
-	</a-scene>
-</body>
+<!DOCTYPE html>
+<html>
+  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+  <!-- we import arjs version without NFT but with marker + location based support -->
+  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <body style="margin : 0px; overflow: hidden;">
+    <a-scene embedded arjs>
+      <a-marker preset="hiro">
+        <!-- we use cors proxy to avoid cross-origin problems -->
+        <!--
+          ⚠️⚠️⚠️
+          https://arjs-cors-proxy.herokuapp.com/ is now offline, Heroku has dismissed all his free plans from November 2022.
+          You need to host your own proxy and use it instead. The proxy is based on CORS Anywhere (see https://github.com/Rob--W/cors-anywhere).
+          ⚠️⚠️⚠️
+        -->
+        <a-entity
+          position="0 0 0"
+          scale="0.05 0.05 0.05"
+          gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
+        ></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
