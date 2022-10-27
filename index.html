@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Snarqe</title>
+    <title>Hello!</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -17,7 +17,6 @@
     <script type="text/javascript" src="snake.js" defer></script>
     <script type="text/javascript" src="draw.js" defer></script>
     <script>
-      <!-- Mostly taken fron https://aframe-draw-texture.glitch.me/ Probably could cut most of the code, but I need to understand it better-->
       AFRAME.registerComponent("draw", {
         init: function () {
           this.isDrawing = true;
@@ -39,7 +38,7 @@
     </script>
   </head>
   <body>
-    <div id="drawDiv" style="visibility: visible;">
+    <div id="drawDiv" style="visibility: hidden;">
       <p>😮</p>
       <canvas id="source-canvas" width="256" height="256"></canvas>
     </div>
