@@ -37,8 +37,8 @@
       });
     </script>
   </head>
-  <body style="margin : 0px; overflow: hidden;">
-    <div id="drawDiv" style="visibility: hidden;">
+  <body>
+    <div id="drawDiv" style="visibility: visible;">
       <p>😮</p>
       <canvas id="source-canvas" width="256" height="256"></canvas>
     </div>
@@ -56,5 +56,13 @@
 
       <a-entity camera></a-entity>
     </a-scene>
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div
+      class="glitchButton"
+      style="position: fixed; top: 20px; right: 20px"
+    ></div>
+    <script src="https://button.glitch.me/button.js"></script>
   </body>
 </html>
