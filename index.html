@@ -1,23 +1,58 @@
 <!DOCTYPE html>
-<html>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-  <!-- we import arjs version without NFT but with marker + location based support -->
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<html lang="en">
   <head>
-    <title>Box</title>
+    <title>Snarqe</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's javascript file -->
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- we import arjs version without NFT but with marker + location based support -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="/script.js" defer></script>
+    <script>
+      <!-- Mostly taken fron https://aframe-draw-texture.glitch.me/ Probably could cut most of the code, but I need to understand it better-->
+      AFRAME.registerComponent("draw", {
+        init: function () {
+          this.isDrawing = true;
+          this.texture = null;
+          let canvas = document.getElementById("source-canvas");
+
+          this.el.addEventListener("loaded", (e) => {
+            let mesh = this.el.getObject3D("mesh");
+            this.texture = new THREE.CanvasTexture(canvas);
+            let textureToBeRemoved = mesh.material.map;
+            mesh.material.map = this.texture;
+            if (textureToBeRemoved) textureToBeRemoved.dispose();
+          });
+        },
+        tick: function () {
+          if (this.texture && this.isDrawing) this.texture.needsUpdate = true;
+        },
+      });
+    </script>
   </head>
-  <body style="margin : 0px; overflow: hidden;">
+  <body>
+    <div id="drawDiv" style="visibility: hidden;">
+      <p>😮</p>
+      <canvas id="source-canvas" width="256" height="256"></canvas>
+    </div>
+
     <a-scene embedded arjs>
       <a-marker preset="hiro">
-        <!-- we use cors proxy to avoid cross-origin problems -->
-        <!--
-          ⚠️⚠️⚠️
-          https://arjs-cors-proxy.herokuapp.com/ is now offline, Heroku has dismissed all his free plans from November 2022.
-          You need to host your own proxy and use it instead. The proxy is based on CORS Anywhere (see https://github.com/Rob--W/cors-anywhere).
-          ⚠️⚠️⚠️
-        -->
-        <a-image src="./Clean-and-Coffe.png" height="1.5"></a-image>
+        <a-plane
+          position="0 0 0"
+          rotation="-90 0 0"
+          width="1"
+          height="1"
+          draw
+        ></a-plane>
       </a-marker>
+
       <a-entity camera></a-entity>
     </a-scene>
   </body>
