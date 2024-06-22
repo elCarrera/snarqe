@@ -10,9 +10,13 @@
     <link rel="stylesheet" href="style.css" />
 
     <!-- import the webpage's javascript file -->
+    <!--<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>-->
+    <!--<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>-->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js">
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js">
+    <!-- we import arjs version without NFT but with marker + location based support -->
+    <!--<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>-->
     <script src="https://raw.githack.com/AR-js-org/AR.js/dev/aframe/build/aframe-ar.js"></script>
+    <script type="text/javascript" src="fruit.js" defer></script>
     <script type="text/javascript" src="snake.js" defer></script>
     <script type="text/javascript" src="draw.js" defer></script>
     <script>
@@ -55,5 +59,12 @@
       <a-entity camera></a-entity>
     </a-scene>
 
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div
+      class="glitchButton"
+      style="position: fixed; top: 20px; right: 20px"
+    ></div>
+    <script src="https://button.glitch.me/button.js"></script>
   </body>
 </html>
