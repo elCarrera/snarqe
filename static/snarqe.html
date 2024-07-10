@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Snarqe</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="styles/style.css" />
+
+    <script src="libs/aframe.min.js"></script>
+    <!-- we import arjs version without NFT but with marker + location based support -->
+    <script src="libs/aframe-ar.js"></script>
+    <script defer src="/js/snake_for_aframe.js"></script>
+    <body style="margin : 0px; overflow: hidden;">
+    <script type="text/javascript" src="js/snake_for_aframe.js" defer></script>
+    <script>
+      AFRAME.registerComponent("draw", {
+        init: function () {
+          this.isDrawing = true;
+          this.texture = null;
+          let canvas = document.getElementById("source-canvas");
+
+          this.el.addEventListener("loaded", (e) => {
+            let mesh = this.el.getObject3D("mesh");
+            this.texture = new THREE.CanvasTexture(canvas);
+            let textureToBeRemoved = mesh.material.map;
+            mesh.material.map = this.texture;
+            if (textureToBeRemoved) textureToBeRemoved.dispose();
+          });
+        },
+        tick: function () {
+          if (this.texture && this.isDrawing) this.texture.needsUpdate = true;
+        },
+      });
+    </script>
+  </head>
+  <body style="margin : 0px; overflow: hidden;">
+    <div id="drawDiv" style="display: none;">
+      <canvas id="source-canvas" width="400" height="400"></canvas>
+    </div>
+
+    <a-scene embedded arjs>
+      <a-marker preset="hiro">
+        <a-plane
+          position="0 0 0"
+          rotation="-90 0 0"
+          width="1"
+          height="1"
+          draw
+        ></a-plane>
+      </a-marker>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+  </body>
+</html>
