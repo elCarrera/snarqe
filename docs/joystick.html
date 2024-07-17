@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Joystick Controls</title>
+	<style>
+	body
+	{
+		font-family: Courier, monospaced;
+		font-size: 16px;
+		font-weight: bold;
+	}
+	</style>
+<script defer src='js/joystick.js'></script>
+
+</head>
+
+<body>
+
+Joystick Controls.
+<hr>
+<div id="status1" style="color: red;">Joystick 1</div>
+<div id="status2" style="color: blue;">Joystick 2</div>
+
+<hr>
+<div style="border: 1px solid red; width: 128px; position: absolute; left:10px; top:150px;">
+	<img src="images/joystick-base.png"/>
+	<div id="stick1" style="position: absolute; left:32px; top:32px;">
+	<img src="images/joystick-red.png"/>		
+	</div>
+</div>
+
+<div style="border: 1px solid blue; width: 128px; position: absolute; left:210px; top:150px;">
+	<img src="images/joystick-base.png"/>
+	<div id="stick2" style="position: absolute; left:32px; top:32px;">
+	<img src="images/joystick-blue.png"/>		
+	</div>
+</div>
+
+</body>
+</html>
