@@ -9,7 +9,7 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            position: sticky;
+            position: fixed;
             bottom: 0;
             background-color: lightgray;
         }
@@ -47,19 +47,18 @@
     </div>
 
     <script>
-
         let arrows = document.querySelectorAll('.arrow');
 
         arrows.forEach(arrow => {
 
             arrow.ontouchstart = function() {
-
+ 
                 alert(this.id);
             };
 
             arrow.ontouchmove = function() {
             
-            alert(this.id);
+             alert(this.id);
             };
         });
     </script>

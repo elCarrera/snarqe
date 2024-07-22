@@ -14,21 +14,17 @@ app.use((req,res,next) =>{
   next();
 });
 
-app.use(express.static('static'));
+app.use(express.static('docs'));
 
 app.use((req, res, next) => { 
   switch(req.url) { 
       case '/index': 
-          res.redirect('/index.html'); 
-          return; 
+        res.redirect('/index.html'); 
+        return; 
       case '/ping': 
-          res.redirect('ping.html'); 
-          return; 
-           
-      /* PON LAS DEMAS */ 
-   
-       
-      default: 
+        res.redirect('ping.html'); 
+        return;
+      default:
         next(); 
   } 
 }); 

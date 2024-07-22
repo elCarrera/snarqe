@@ -8,6 +8,7 @@
 
     <!-- import the webpage's stylesheet -->
     <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/arrows.css">
 
     <script src="libs/aframe.min.js"></script>
     <!-- we import arjs version without NFT but with marker + location based support -->
@@ -55,12 +56,67 @@
       <a-entity camera></a-entity>
     </a-scene>
     
-    <div id="status2" style="color: blue;">Joystick 2</div>
-    <div style="border: 1px solid blue; width: 128px; position: absolute; left:210px; bottom:150px;">
-      <img src="images/joystick-base.png"/>
-      <div id="stick2" style="position: absolute; left:32px; bottom:32px;">
-      <img src="images/joystick-blue.png"/>		
-      </div>
-    </div>
+    
+    <div id="bottom-div">
+      <table>
+          <tr>
+              <td></td>
+              <td><div class="arrow" id="up">↑</div></td>
+              <td></td>
+          </tr>
+          <tr>
+              <td><div class="arrow" id="left">←</div></td>
+              <td></td>
+              <td><div class="arrow" id="right">→</div></td>
+          </tr>
+          <tr>
+              <td></td>
+              <td><div class="arrow" id="down">↓</div></td>
+              <td></td>
+          </tr>
+      </table>
+  </div>
+
+  
+  <script>
+
+      function isSmartphone() {
+          const userAgent = navigator.userAgent.toLowerCase();
+          return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+      }
+
+      if (isSmartphone()) {
+          let arrowDiv = document.querySelector('#bottom-div');
+          arrowDiv.style.display;
+
+
+          let arrows = document.querySelectorAll('.arrow');
+
+          arrows.forEach(arrow => {
+              arrow.ontouchstart = function() {
+                  navigator.vibrate(50);
+                  snake.direction(this.id);
+              };
+          });
+
+      } else {
+          let arrowDiv = document.querySelector('#bottom-div');
+
+          // lo hacemos visible y clickable para pruebas
+          arrowDiv.style.display ;
+
+          let arrows = document.querySelectorAll('.arrow');
+          
+          arrows.forEach(arrow => {
+              arrow.onclick = function() {
+                  snake.direction(this.id);
+              };
+          });
+
+      }
+      
+      
+  </script>
+
   </body>
 </html>

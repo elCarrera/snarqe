@@ -1,0 +1,34 @@
+body {
+    background-color: aquamarine;
+}
+#bottom-div {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    position: sticky;
+    bottom: 0;
+    background-color: rgb(238, 232, 170, 0.5);
+}
+
+table {
+    border-collapse: collapse;
+    width: 200px;
+    height: 200px;
+}
+
+td {
+    width: 33.33%;
+    height: 33.33%;
+    text-align: center;
+}
+
+.arrow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 3em;
+    left: 0px !important;
+    transform: translateX(0)
+}

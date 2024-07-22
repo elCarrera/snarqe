@@ -4,11 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="/js/snake_for_aframe.js"></script>
-    <title>Snake</title>
+    <link rel="stylesheet" href="styles/arrows.css">
+    <title>just snake</title>
 </head>
 <body>
     <canvas id="source-canvas" width="400" height="400">
 
     </canvas>
+
+    <div id="bottom-div">
+        <table>
+            <tr>
+                <td></td>
+                <td><div class="arrow" id="up">↑</div></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><div class="arrow" id="left">←</div></td>
+                <td></td>
+                <td><div class="arrow" id="right">→</div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><div class="arrow" id="down">↓</div></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    
+    <script>
+
+        function isSmartphone() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+        }
+
+        if (isSmartphone()) {
+            let arrowDiv = document.querySelector('#bottom-div');
+            arrowDiv.style.display;
+
+
+            let arrows = document.querySelectorAll('.arrow');
+
+            arrows.forEach(arrow => {
+                arrow.ontouchstart = function() {
+                    navigator.vibrate(50);
+                    snake.direction(this.id);
+                };
+            });
+
+        } else {
+            let arrowDiv = document.querySelector('#bottom-div');
+            arrowDiv.style.display = 'none';
+        }
+        
+        
+    </script>
+
 </body>
 </html>

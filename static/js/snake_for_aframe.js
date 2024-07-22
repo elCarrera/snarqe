@@ -18,7 +18,28 @@ var snake = {
   cells: [],
 
   // length of the snake. grows when eating an apple
-  maxCells: 4
+  maxCells: 4,
+
+  direction: function(dir){
+    switch(dir.toUpperCase()) {
+      case 'UP' :
+        snake.dy = -grid;
+        snake.dx = 0;
+        break;
+      case 'LEFT':
+        snake.dx = -grid;
+        snake.dy = 0;
+        break;
+      case 'RIGHT':
+        snake.dx = grid;
+        snake.dy = 0;
+        break;
+      case 'DOWN':
+        snake.dy = grid;
+        snake.dx = 0;
+        break;
+    }
+  }
 };
 var apple = {
   x: 320,
@@ -119,23 +140,19 @@ document.addEventListener('keydown', function(e) {
 
   // left arrow key
   if (e.which === 37 && snake.dx === 0) {
-    snake.dx = -grid;
-    snake.dy = 0;
+    snake.direction('left');
   }
   // up arrow key
   else if (e.which === 38 && snake.dy === 0) {
-    snake.dy = -grid;
-    snake.dx = 0;
+    snake.direction('up');
   }
   // right arrow key
   else if (e.which === 39 && snake.dx === 0) {
-    snake.dx = grid;
-    snake.dy = 0;
+    snake.direction('right');
   }
   // down arrow key
   else if (e.which === 40 && snake.dy === 0) {
-    snake.dy = grid;
-    snake.dx = 0;
+    snake.direction('down');
   }
 });
 
