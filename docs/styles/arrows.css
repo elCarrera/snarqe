@@ -2,7 +2,7 @@ body {
     background-color: aquamarine;
 }
 #bottom-div {
-    width: 70%;
+    width: 100%;
     display: flex;
     justify-content: center;
     position: sticky;
