@@ -13,44 +13,21 @@
     <script src="libs/aframe.min.js"></script>
     <!-- we import arjs version without NFT but with marker + location based support -->
     <script src="libs/aframe-ar.js"></script>
-    <script defer src="/js/snake_for_aframe.js"></script>
-    <script defer src='js/joystick.js'></script>
-    <script type="text/javascript" src="js/snake_for_aframe.js" defer></script>
-    <script>
-      AFRAME.registerComponent("draw", {
-        init: function () {
-          this.isDrawing = true;
-          this.texture = null;
-          let canvas = document.getElementById("source-canvas");
-
-          this.el.addEventListener("loaded", (e) => {
-            let mesh = this.el.getObject3D("mesh");
-            this.texture = new THREE.CanvasTexture(canvas);
-            let textureToBeRemoved = mesh.material.map;
-            mesh.material.map = this.texture;
-            if (textureToBeRemoved) textureToBeRemoved.dispose();
-          });
-        },
-        tick: function () {
-          if (this.texture && this.isDrawing) this.texture.needsUpdate = true;
-        },
-      });
-    </script>
+    <script src="js/snake_engine.js"></script>
+    <script src="js/snake_voxel.js"></script>
   </head>
   <body style="margin : 0px; overflow: hidden;">
-    <div id="drawDiv" style="display: none;">
-      <canvas id="source-canvas" width="400" height="400"></canvas>
-    </div>
-
     <a-scene embedded arjs>
-      <a-marker-camera preset="custom" type="pattern" url="patterns\pattern-pixel_apples.patt">
+      <a-marker-camera preset="custom" type="pattern" url="patterns/pattern-pixel_apple.patt">
         <a-plane
           position="0 0 0"
           rotation="-90 0 0"
           width="1"
           height="1"
-          draw
         ></a-plane>
+        <a-entity snake-voxel></a-entity>
+        <a-entity light="type: ambient; intensity: 0.8"></a-entity>
+        <a-entity light="type: directional; intensity: 0.6"></a-entity>
       </a-marker-camera>
 
       <a-entity camera></a-entity>

@@ -27,12 +27,11 @@
 
 ## Juegos y motores
 
-- Motor nuevo: `docs/js/snake_for_aframe.js`, basado en `requestAnimationFrame`; define un `snake` global y lo usan `docs/snake.html` y `docs/snarqe.html`.
+- `docs/js/snake_engine.js` es el motor: lógica pura de la rejilla (sin canvas ni A-Frame), define el global `window.snake` y escucha el teclado. Lo cargan `docs/snake.html` y `docs/snarqe.html`.
+- `docs/js/snake_canvas.js` es el render 2D sobre canvas; lo usa `docs/snake.html`, que sigue siendo la versión 2D.
+- `docs/js/snake_voxel.js` registra el componente A-Frame `snake-voxel`, que dibuja la serpiente y la manzana como vóxeles 3D; lo usa `docs/snarqe.html`, la versión AR sobre marcador.
+- `docs/js/snake_for_aframe.js` está retirado: no debe usarse ni referenciarse.
 - Motor viejo: `docs/js/snake.js`, `fruit.js` y `draw.js`, basados en `setInterval`; solo lo referencia `docs/index_old.html` (cuyas rutas de script relativas a la raíz `fruit.js`/`snake.js`/`draw.js` no resuelven: los archivos están en `docs/js/`).
-- `docs/snarqe.html` carga `snake_for_aframe.js` dos veces (líneas 16 y 18) → dos bucles de juego y el doble de velocidad. Quita uno al depurar.
-- `docs/snarqe.html` también carga `docs/js/joystick.js`, pero ese script espera los elementos `#stick1`, `#stick2`, `#status1`, `#status2` que la página no tiene, así que su bucle de `requestAnimationFrame` lanza un error. El joystick no está conectado a la dirección de la serpiente; las flechas y el teclado controlan la serpiente.
-- El puente del canvas de RA se registra inline en `docs/snarqe.html` con `THREE.CanvasTexture`.
-- `docs/snarqe.html` apunta a `patterns\pattern-pixel_apples.patt` (barra invertida, plural), pero el asset versionado es `docs/patterns/pattern-pixel_apple.patt`. Corrige la ruta antes de depurar marcadores que no aparecen.
 - `docs/sayHi.html` es la única página con seguimiento facial; necesita permiso de cámara.
 
 ## Edición

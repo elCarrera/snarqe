@@ -1,0 +1,39 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "install",
+			"group": "clean",
+			"problemMatcher": [],
+			"label": "npm: install",
+			"detail": "install dependencies from package"
+		},
+		{
+			"type": "process",
+			"command": "wsl.exe",
+			"args": [
+				"-d",
+				"Ubuntu",
+				"-e",
+				"bash",
+				"-lc",
+				"opencode"
+			],
+			"problemMatcher": [],
+			"label": "opencode",
+			"detail": "abrir opencode en WSL (Ubuntu)"
+		},
+		{
+			"type": "npm",
+			"script": "start",
+			"problemMatcher": [],
+			"label": "npm: start",
+			"detail": "nodemon server.js",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+}
