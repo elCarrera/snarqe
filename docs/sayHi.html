@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        video, canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror the video */
+        }
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: red;
+            display: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/facemesh"></script>
+    <script>
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } }) // Cámara delantera
+        .then(stream => {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.play();
+            document.body.appendChild(video);
+
+            const canvas = document.createElement('canvas');
+            document.body.appendChild(canvas);
+            const context = canvas.getContext('2d');
+
+            const message = document.createElement('div');
+            message.id = 'message';
+            message.innerText = 'Feliz 4 aniversario mi amor';
+            document.body.appendChild(message);
+
+            video.addEventListener('play', () => {
+                const draw = () => {
+                    if (!video.paused && !video.ended) {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        requestAnimationFrame(draw);
+                    }
+                };
+                draw();
+            });
+
+            document.body.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+            });
+
+            const faceMesh = new FaceMesh({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/facemesh/${file}` });
+            faceMesh.setOptions({
+                maxNumFaces: 1,
+                refineLandmarks: true,
+                minDetectionConfidence: 0.5,
+                minTrackingConfidence: 0.5
+            });
+
+            faceMesh.onResults(results => {
+                if (results.multiFaceLandmarks.length > 0) {
+                    const landmarks = results.multiFaceLandmarks[0];
+                    const mouthOpen = landmarks[13].y - landmarks[14].y > 0.05;
+                    message.style.display = mouthOpen ? 'block' : 'none';
+                }
+            });
+
+            const onFrame = async () => {
+                await faceMesh.send({ image: video });
+                requestAnimationFrame(onFrame);
+            };
+            onFrame();
+        })
+        .catch(error => {
+            console.error('Error al acceder a la cámara:', error);
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

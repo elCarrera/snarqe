@@ -14,7 +14,7 @@ app.use((req,res,next) =>{
   next();
 });
 
-app.use(express.static('static'));
+app.use(express.static('docs'));
 
 app.use((req, res, next) => { 
   switch(req.url) { 

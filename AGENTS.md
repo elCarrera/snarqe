@@ -1,125 +1,41 @@
-# AGENTS.md — Snarqe
+# Snarqe
 
-## Project Overview
+## Ejecutar y verificar
 
-AR Snake game: HTML5 Canvas snake rendered as a texture in an A-Frame/AR.js scene. Also includes standalone snake, joystick test, arrow controls test, and a face-tracking experiment.
+- Ejecuta los comandos desde la raíz del repositorio; `server.js` resuelve `docs/` y `https/` relativas al cwd.
+- Instala las dependencias con `npm install`; el lockfile fija Express 4.18.2 y nodemon 2.0.20.
+- Servidor de desarrollo: `PORT=3000 npm start` → `https://localhost:3000` (el navegador avisa del certificado autofirmado).
+- `npm start` ejecuta `nodemon server.js`; sin `PORT` escucha en 443. El servidor es solo HTTPS (sin listener HTTP ni redirección).
+- No hay scripts de test, lint, typecheck ni CI. Verifica los cambios manualmente en un navegador.
+- `https/` está en gitignore; si faltan los certificados, regenéralos con:
+  ```bash
+  openssl req -x509 -newkey rsa-4096 -keyout https/key.pem -out https/cert.pem -days 365 -nodes -subj '/CN=localhost'
+  ```
 
-## Tech Stack
+## Servidor
 
-- **Backend**: Node.js, Express 4.18.2, HTTPS (built-in `https`)
-- **Frontend**: A-Frame 1.6.0, AR.js, vanilla JS Canvas game
-- **Face tracking** (experimental): TensorFlow.js + MediaPipe FaceMesh
-- **Dev tool**: nodemon
+- `server.js` es el entrypoint HTTPS de Express: sirve `docs/`, registra cada petición y redirige `/index` → `/index.html` y `/ping` → `ping.html`. El switch compara `req.url`, así que los query strings lo evitan. No hay manejadores personalizados de 404/500.
+- `opencode.json` carga `AGENTS.md`, `review.md` y `README.md` como instrucciones; lee `review.md` antes de cambiar el servidor.
+- `package.json` solo define el script `start`.
+- `.gitignore` ignora `node_modules/` y `https/`.
 
-## Directory Structure
+## Estructura del frontend
 
-```
-snarqe/
-├── server.js              # Express HTTPS server, serves `docs/`
-├── package.json           # Dependencies: express, nodemon
-├── .gitignore             # Ignores node_modules/, https/
-├── README.md
-├── AGENTS.md
-├── review.md
-├── docs/                  # Served by Express.static — "active" frontend
-│   ├── index.html         # Navigation page
-│   ├── snarqe.html        # Main AR snake page
-│   ├── snake.html         # Standalone snake game
-│   ├── joystick.html      # Virtual joystick test
-│   ├── arrows.html        # Arrow-button test
-│   ├── AFrame.html        # Minimal A-Frame demo
-│   ├── ping.html          # "pong" health-check
-│   ├── sayHi.html         # Face-tracking (only here, not in static/)
-│   ├── index_old.html     # Older AR page with Hiro marker
-│   ├── images/            # joystick-base.png, joystick-blue.png, joystick-red.png
-│   ├── js/
-│   │   ├── snake_for_aframe.js  # Main snake engine (used in snarqe.html, snake.html)
-│   │   ├── snake.js             # Old snake constructor (used in index_old.html)
-│   │   ├── fruit.js             # Old fruit class (used in index_old.html)
-│   │   ├── draw.js              # Old game driver (used in index_old.html)
-│   │   └── joystick.js          # Joystick controller class
-│   ├── styles/
-│   │   ├── style.css
-│   │   └── arrows.css
-│   ├── libs/              # Local copies of aframe.min.js, aframe-ar.js
-│   └── patterns/          # Custom AR marker: pattern-pixel_apple.patt
-├── static/                # Near-duplicate of docs/ (unserved, older version)
-├── https/                 # Self-signed SSL certs (gitignored)
-└── old/                   # Backup files
-```
+- `docs/` es el frontend activo servido. `static/` es un casi-duplicado obsoleto; `old/` contiene copias de referencia obsoletas (su `server_copy.js` está roto: usa `app` sin requerir Express). No edites ninguno de los dos.
+- `docs/libs/` incluye A-Frame vendorizado localmente (`aframe.min.js`, `aframe-ar.js`); solo `docs/sayHi.html` carga TensorFlow.js/MediaPipe desde CDN.
+- `docs/index.html` es el directorio manual de páginas; añade ahí las páginas y enlaces nuevos.
 
-## ⚠️ Critical: Dual Directory Problem
+## Juegos y motores
 
-**`docs/` and `static/` are near-duplicates.** The server serves from `docs/`. Differences include:
+- Motor nuevo: `docs/js/snake_for_aframe.js`, basado en `requestAnimationFrame`; define un `snake` global y lo usan `docs/snake.html` y `docs/snarqe.html`.
+- Motor viejo: `docs/js/snake.js`, `fruit.js` y `draw.js`, basados en `setInterval`; solo lo referencia `docs/index_old.html` (cuyas rutas de script relativas a la raíz `fruit.js`/`snake.js`/`draw.js` no resuelven: los archivos están en `docs/js/`).
+- `docs/snarqe.html` carga `snake_for_aframe.js` dos veces (líneas 16 y 18) → dos bucles de juego y el doble de velocidad. Quita uno al depurar.
+- `docs/snarqe.html` también carga `docs/js/joystick.js`, pero ese script espera los elementos `#stick1`, `#stick2`, `#status1`, `#status2` que la página no tiene, así que su bucle de `requestAnimationFrame` lanza un error. El joystick no está conectado a la dirección de la serpiente; las flechas y el teclado controlan la serpiente.
+- El puente del canvas de RA se registra inline en `docs/snarqe.html` con `THREE.CanvasTexture`.
+- `docs/snarqe.html` apunta a `patterns\pattern-pixel_apples.patt` (barra invertida, plural), pero el asset versionado es `docs/patterns/pattern-pixel_apple.patt`. Corrige la ruta antes de depurar marcadores que no aparecen.
+- `docs/sayHi.html` es la única página con seguimiento facial; necesita permiso de cámara.
 
-- `docs/index.html` has title "docs" and links to `sayHi.html`; `static/` index has title "Elis" and no sayHi link
-- `docs/snarqe.html` uses a custom AR pattern; `static/` uses Hiro marker
-- `docs/` has `sayHi.html` and `patterns/`; `static/` does not
-- `docs/arrows.html` uses `position: sticky`; `static/` uses `position: fixed`
+## Edición
 
-**Any change to JS/CSS/HTML must be made in `docs/`.** The `static/` dir should be treated as a stale reference. If you modify `docs/`, consider if `static/` needs the same change.
-
-## How to Run
-
-```bash
-npm install          # Install express + nodemon
-PORT=3000 npm start  # Start on port 3000 (no sudo needed)
-npm start            # Starts on port 443 (requires sudo)
-```
-
-Access: `https://localhost:3000` or `https://localhost`. The server is HTTPS-only.
-
-## Key Architectural Notes
-
-1. **Two snake engines coexist:**
-   - **New** (`snake_for_aframe.js`): object-based, `requestAnimationFrame` loop, used by `snarqe.html` and `snake.html`.
-   - **Old** (`snake.js` + `fruit.js` + `draw.js`): constructor-function-based, `setInterval` loop, used by `index_old.html`.
-
-2. **Canvas→AR bridge:** The A-Frame component `draw` (registered inline in `snarqe.html`) maps a hidden 2D canvas onto a 3D plane texture each frame via `THREE.CanvasTexture`.
-
-3. **Joystick not wired:** `joystick.js` is loaded in `snarqe.html` but its output is not connected to snake direction. It only works standalone on `joystick.html`.
-
-4. **HTTPS certs** are in `https/` and gitignored. On a fresh clone, regenerate with:
-   ```bash
-   openssl req -x509 -newkey rsa:4096 -keyout https/key.pem -out https/cert.pem -days 365 -nodes -subj '/CN=localhost'
-   ```
-
-## Coding Conventions
-
-- **JS naming**: camelCase for variables/functions, PascalCase for constructors (`Snake`, `Fruit`, `JoystickController`)
-- **File naming**: lowercase hyphenated (`snake_for_aframe.js`, `arrows.html`)
-- **Semicolons**: mostly present (add them)
-- **Indentation**: prefer 2 spaces (project is inconsistent — be consistent with the file you edit)
-- **Strings**: mix of Spanish and English — follow the surrounding context
-
-## Common Agent Tasks
-
-### Adding a new HTML page
-1. Create the file in `docs/`
-2. Add a link in `docs/index.html`
-3. If needed, add a redirect in `server.js`
-4. If the page uses new JS/CSS, create in `docs/js/` or `docs/styles/`
-
-### Modifying the snake game
-- Edit `docs/js/snake_for_aframe.js` for the main game logic
-- The A-Frame bridge is in the inline `<script>` in `docs/snarqe.html`
-
-### Modifying styles
-- `docs/styles/style.css` for general styles
-- `docs/styles/arrows.css` for arrow-control-specific styles
-
-### Adding server routes
-- Edit `server.js`
-- Keep the existing middleware pattern
-- Add error handlers if needed (currently none exist)
-
-## No Tests
-
-No test framework is set up. No linting. Manual testing via browser at `https://localhost`.
-
-## A-Frame & AR.js Notes
-
-- AR library: `libs/aframe-ar.js` (local copy) or use CDN version in some pages
-- A-Frame 1.6.0: `libs/aframe.min.js`
-- Marker types used: Hiro (`index_old.html`), custom pattern (`snarqe.html` via `patterns/pattern-pixel_apple.patt`)
-- On mobile, camera permission is required for AR features
+- Pon los cambios del frontend en `docs/` (JS/CSS/assets dentro de `docs/`); pon los cambios del servidor en `server.js`.
+- Mantén los cambios acotados y sigue el estilo del archivo circundante; no reformatees archivos no relacionados.

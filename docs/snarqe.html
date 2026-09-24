@@ -43,7 +43,7 @@
     </div>
 
     <a-scene embedded arjs>
-      <a-marker preset="hiro">
+      <a-marker-camera preset="custom" type="pattern" url="patterns\pattern-pixel_apples.patt">
         <a-plane
           position="0 0 0"
           rotation="-90 0 0"
@@ -51,7 +51,7 @@
           height="1"
           draw
         ></a-plane>
-      </a-marker>
+      </a-marker-camera>
 
       <a-entity camera></a-entity>
     </a-scene>

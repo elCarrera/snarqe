@@ -3,12 +3,37 @@ var context = canvas.getContext('2d');
 
 // the canvas width & height, snake x & y, and the apple x & y, all need to be a multiples of the grid size in order for collision detection to work
 // (e.g. 16 * 25 = 400)
-var grid = 16;
+
+const numGrid = 10;
+const canvasSize = canvas.width;
+let level = 3;
+let gameSpeed = getSpeed(level);
+
+function getSpeed(level) {
+  switch (level) {
+    case 1: 
+      return 40;
+    case 2:
+      return 30;
+    case 3:
+      return 20;
+    case 4:
+      return 10;
+    case 5:
+      return 5;
+    default:
+      return 40;
+  }
+}
+
+
+
+var grid = canvasSize / numGrid;
 var count = 0;
 
 var snake = {
-  x: 160,
-  y: 160,
+  x: 10 * grid,
+  y: 10 * grid,
 
   // snake velocity. moves one grid length every frame in either the x or y direction
   dx: grid,
@@ -23,8 +48,8 @@ var snake = {
   direction: function(dir){
     switch(dir.toUpperCase()) {
       case 'UP' :
-        snake.dy = -grid;
         snake.dx = 0;
+        snake.dy = -grid;
         break;
       case 'LEFT':
         snake.dx = -grid;
@@ -35,15 +60,16 @@ var snake = {
         snake.dy = 0;
         break;
       case 'DOWN':
-        snake.dy = grid;
         snake.dx = 0;
+        snake.dy = grid;
         break;
     }
   }
 };
+
 var apple = {
-  x: 320,
-  y: 320
+  x: (getRandomInt(0, numGrid) * grid),
+  y: (getRandomInt(0, numGrid) * grid)
 };
 
 // get random whole numbers in a specific range
@@ -56,8 +82,9 @@ function getRandomInt(min, max) {
 function loop() {
   requestAnimationFrame(loop);
 
-  // slow game loop to 15 fps instead of 60 (60/15 = 4)
-  if (++count < 4) {
+  // slow game loop to 15 fps instead of 60 (60/15 = 4) 
+  // no entiendo la anotación de arriba, no tiene ningún sentido
+  if (++count < gameSpeed) {
     return;
   }
 
@@ -108,8 +135,8 @@ function loop() {
       snake.maxCells++;
 
       // canvas is 400x400 which is 25x25 grids
-      apple.x = getRandomInt(0, 25) * grid;
-      apple.y = getRandomInt(0, 25) * grid;
+      apple.x = getRandomInt(0, numGrid) * grid;
+      apple.y = getRandomInt(0, numGrid) * grid;
     }
 
     // check collision with all cells after this one (modified bubble sort)
@@ -117,15 +144,15 @@ function loop() {
 
       // snake occupies same space as a body part. reset game
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-        snake.x = 160;
-        snake.y = 160;
+        snake.x = 10 * grid;
+        snake.y = 10 * grid;
         snake.cells = [];
         snake.maxCells = 4;
         snake.dx = grid;
         snake.dy = 0;
 
-        apple.x = getRandomInt(0, 25) * grid;
-        apple.y = getRandomInt(0, 25) * grid;
+        apple.x = getRandomInt(0, numGrid) * grid;
+        apple.y = getRandomInt(0, numGrid) * grid;
       }
     }
   });
